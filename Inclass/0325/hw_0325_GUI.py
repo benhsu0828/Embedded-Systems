@@ -7,48 +7,19 @@ ser=serial.Serial("COM7", 115200,timeout=2)
 data=""
 condition=False
 
-var=tkinter.IntVar()
-var2=tkinter.IntVar()
-var3=tkinter.IntVar()
-
-try:
-    while True:
-        while ser.in_waiting:
-            try:
-                msg=ser.readline().decode()
-                print('serial_msg: ',msg)
-                msg_data=re.split(',|:',msg)
-                
-                if("攝氏溫度" in str(msg_data)) and ("華氏溫度" in str(msg_data)) and ('相對溼度' in str(msg_data)):
-                    print('msg_data='+str(msg_data))
-                    print('msg_data[0]='+str(msg_data[1]))
-                else:
-                    continue
-                time.sleep(1)
-            except OSError as er:
-                ser.close()
-                print(er)
-                
-except KeyboardInterrupt:
-    ser.close()
-    print('closed!')
-except OSError as er:
-    ser.close()
-    print(er)
-
 def print_selection():     
     if(var.get()==True)&(var2.get()==False)&(var3.get()==False):
-        LabelA.config(text='相對溫度'+msg[1])
+        LabelA.config(text='相對溫度'+msg_data[1])
     elif (var.get()==False)&(var2.get()==True)&(var3.get()==False):
-        LabelA.config(text='攝氏溫度'+msg[3])
+        LabelA.config(text='攝氏溫度'+msg_data[3])
     elif (var.get()==False)&(var2.get()==False)&(var3.get()==True):
-        LabelA.config(text='華氏溫度'+msg[5])
+        LabelA.config(text='華氏溫度'+msg_data[5])
     else:
         LabelA.config(text='error')
         
 def print_selection2(value): 
     #將拉桿位置顯示出來
-    if int(msg_data[1]) > scale.get():
+    if float(msg_data[1]) > float(scale.get()):
         Ardiuno_cmd='a'
         cmd=Ardiuno_cmd.encode("utf-8")
         SerialWrite(cmd)
@@ -57,6 +28,11 @@ def print_selection2(value):
         LabelA.config(text="Send the command 'a' to Ardiuno")
         LabelA.update_idletasks()
         Tkwindow.update()
+    else: 
+        Ardiuno_cmd='b'
+        cmd=Ardiuno_cmd.encode("utf-8")
+        SerialWrite(cmd)
+        condition=False
         
 def SerialWrite(command):
     ser.write(command)
@@ -120,6 +96,15 @@ buttonStart.pack(side=tkinter.RIGHT)
 buttonEnd=tkinter.Button(Tkwindow,anchor=tkinter.S,text="Exit",width=10,height=1,command=Exit)
 buttonEnd.pack(side=tkinter.RIGHT)
 
+var=tkinter.IntVar()
+var2=tkinter.IntVar()
+var3=tkinter.IntVar()
+
+msg=ser.readline().decode()
+print('serial_msg: ',msg)
+msg_data=re.split(',|:',msg)
+time.sleep(1)
+    
 checkbutton=tkinter.Checkbutton(Tkwindow,text='相對溼度',variable=var,\
                 onvalue=True,offvalue=False,command=print_selection)
 checkbutton.pack()
@@ -131,8 +116,9 @@ checkbutton3=tkinter.Checkbutton(Tkwindow,text='華氏溫度',variable=var3,\
                 onvalue=True,offvalue=False,command=print_selection)
 checkbutton3.pack()
 
-scale=tkinter.Scale(Tkwindow,label='try me',from_=5 ,to = 11,\
+scale=tkinter.Scale(Tkwindow,label='try me',from_=50 ,to = 100,\
                orient='horizontal',length=200, show=True,\
               tickinterval=3,resolution=0.01,command=print_selection2)
 scale.pack()
+
 Tkwindow.mainloop()
