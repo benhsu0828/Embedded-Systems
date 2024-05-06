@@ -1,0 +1,22 @@
+[
+    {
+        "id": "e48bb4801a825575",
+        "type": "function",
+        "z": "0bda9dcd5dc4372c",
+        "name": "function 10",
+        "func": "var test = msg.payload;\ntest.forEach(function(e,i){        \nmsg.payload=e['d'];});\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1050,
+        "y": 300,
+        "wires": [
+            [
+                "b118f2b73e29e132"
+            ]
+        ]
+    }
+]
