@@ -3,8 +3,8 @@ from django.views.decorators.csrf import csrf_exempt
 import pymysql,json
 
 server = "127.0.0.1"  # 主機
-db_username = "test"  # 使用者帳號
-db_password = "test"  # 使用者密碼
+db_username = "nima"  # 使用者帳號
+db_password = "123"  # 使用者密碼
 db_database = "test"
 db_table = "dht"
 
@@ -18,10 +18,10 @@ def G000(request):
     # 判斷是否使用POST，是才處理
     if request.method == "GET":
         # 資料庫建立語法
-        sql = ("CREATE TABLE dht (ID INT AUTO_INCREMENT,"
-               "Celisius VARCHAR,"
-               "Fahrenheit VARCHAR,"
-               "Humidity VARCHAR)")
+        sql = ("CREATE TABLE `test`.`dht` (`ID` INT NOT NULL AUTO_INCREMENT,"
+               "`Celisius` VARCHAR(10),"
+               "`Fahrenheit` VARCHAR(10),"
+               "`Humidity` VARCHAR(10),PRIMARY KEY (`ID`));")
         try:
             # 指定連結的資料庫
             db = pymysql.connect(host=server, user=db_username, password=db_password, database=db_database)
