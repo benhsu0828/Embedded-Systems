@@ -55,9 +55,9 @@ def G001(request):
         data = json.loads(request.body)
         print(data['Celisius'])
         # 資料庫上傳語法
-        sql = ("INSERT INTO dht (Celisius, Fahrenheit, Humidity)"
-                   " VALUES ('%s', '%s', '%s')") % \
-                (data['Celisius'], data['Fahrenheit'], data['Humidity'])
+        sql = ("INSERT INTO dht (Celisius, Fahrenheit, Humidity,d)"
+                   " VALUES ('%s', '%s', '%s','%s')") % \
+                (data['Celisius'], data['Fahrenheit'], data['Humidity'],data['d'])
         print(sql)
         try:
             # 指定連結的資料庫

@@ -27,7 +27,8 @@ function httpRequest($api, $data_string) {
 $data = array(
     "Celisius" => $_GET["c"], // 從GET請求中獲取攝氏溫度
     "Fahrenheit" => $_GET["f"], // 從GET請求中獲取華氏溫度
-    "Humidity" => $_GET["h"] // 從GET請求中獲取濕度
+    "Humidity" => $_GET["h"], // 從GET請求中獲取濕度
+    "d" => $_GET["d"] // 從GET請求中獲取濕度
 );
 
 // 發送HTTP POST請求執行上傳動作
