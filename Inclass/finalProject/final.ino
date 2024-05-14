@@ -91,7 +91,7 @@ void loop()
   float distance = ultrasonic_2_3.convert(ultrasonic_2_3.timing(), Ultrasonic::CM);
   // Serial.print(distance);
 //  delay(1000);
-  if(!flag){
+  while(!flag){
     Serial.println("locked"); 
     read_id = mfrc522_readID(); //呼叫函式取得16進制id
     if (read_id != "") {
@@ -111,11 +111,11 @@ void loop()
     else if (value=='d')
       c='d';
     else if (value=='1')
-      d=1000;
+      d=5;
     else if (value=='2')
-      d=500;
+      d=10;
     else if (value=='3')
-      d=1;
+      d=20;
     else if (value=='4')
       gas='4';
     else if (value=='0')
@@ -124,57 +124,71 @@ void loop()
     if(c=='r'&&distance<=5){
       tone (6,NOTE_G5,300);
       stopped=1;
+      String GET="GET /insert1.php";
+      String getStr = GET + "?d="+ distance +
+              " HTTP/1.1";
+      client.println(getStr);
+      client.println("Host: 172.20.10.4");
+      client.println("Accept: */*");
+      client.println("Connection: close");
+      client.println();
     }
     else if(c=='r'&&distance<=50){
-      d=1000;
+      d=5;
       stopped=0;
       tone (6,NOTE_G5,100);
+      String GET="GET /insert1.php";
+      String getStr = GET + "?d="+ distance +
+              " HTTP/1.1";
+      client.println(getStr);
+      client.println("Host: 172.20.10.4");
+      client.println("Accept: */*");
+      client.println("Connection: close");
+      client.println();
     }
     else if(c=='d'||distance>50){
       stopped=0;
       d=temp;
     }
-    Serial.print((int)d);
-    Serial.print((int)stopped);
+    //Serial.print((int)d);
+    //Serial.print((int)stopped);
     switch (gas) {
       case '4':
         if(!stopped){
           if(c=='r')
           {
             if(current_angle>=150)
+            {
               tone (6,NOTE_C5,300);
+              myservo.write(0);
+            }
             else
             {
-              current_angle+=5;
+              current_angle+=d;
               myservo.write(current_angle);//將角度寫入馬達
             }
           }
           else if(c=='d')
           {
             if(current_angle<=6)
+            {
               tone (6,NOTE_C6,300);
+              myservo.write(180);
+            }
             else
             {
-              current_angle-=5;
+              current_angle-=d;
               myservo.write(current_angle);//將角度寫入馬達
             }
           }
-          Serial.println("ON");
+          //Serial.println("ON");
         }
-        String GET="GET /insert1.php";
-        String getStr = GET + "?d="+ distance +
-                " HTTP/1.1";
-        client.println(getStr);
-        client.println("Host: 172.20.10.4");
-        client.println("Accept: */*");
-        client.println("Connection: close");
-        client.println();
         break;
       case '0':
-        Serial.println("OFF");
+        //Serial.println("OFF");
         break;
       default:
-        Serial.println("Unknown value written");
+        //Serial.println("Unknown value written");
         break;
     if(d==1000)
       speeding=1;
@@ -185,6 +199,5 @@ void loop()
     String text = "distance:" + distance + "," + "speed:" + speeding + ",";
     Serial.println(text);
     }
-    delay(d);
   }
 }

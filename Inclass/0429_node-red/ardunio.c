@@ -27,7 +27,7 @@ void loop()
   hum = dht1.readHumidity();
   t_c = dht1.readTemperature();
   t_f = dht1.readTemperature(true);
-  String text = "相對溼度 : " + hum + "," + "攝氏溫度 : " + t_c +  " , " + "華氏溫度 : " + t_f + "," + distance +',';
+  String text = "相對溼度 : " + hum + " ,"+ "攝氏溫度 : " + t_c +  " , " + "華氏溫度 : " + t_f + "," + distance +',';
   Serial.println(text);
 
   Str01[0] = 'c';

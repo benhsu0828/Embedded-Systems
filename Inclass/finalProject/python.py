@@ -1,6 +1,7 @@
 import time
 import serial
 import tkinter
+import tkinter.messagebox
 import re
 
 ser=serial.Serial("COM7", 115200,timeout=2)
@@ -16,14 +17,17 @@ def print_selection2(value):
     msg = ser.readline().decode()
     print('msg format ={}'.format(msg))
     msg_data=re.split(',|:',msg)
-    if("距離"in str(msg_data[0])) and len(msg_data) == 3:
+    LabelA.config(text=f"Speed : {msg_data[3]}")
+    LabelA.update_idletasks()
+    Tkwindow.update()
+    if("distance"in str(msg_data[0])) and len(msg_data) == 4:
             #將拉桿位置顯示出來
-            if float(msg_data[2]) < 10:
+            if float(msg_data[1]) < 10:
                 tkinter.messagebox.showwarning(title='距離',message='距離過近')
-            elif float(msg_data[2]) == 0:
+            elif float(msg_data[1]) == 0:
                 if flag:
                     tkinter.messagebox.showerror(title='距離',message='危險')
-                    distance = msg_data[2].replace(r"\r\n", '')
+                    distance = msg_data[1].replace(r"\r\n", '')
                     flag = False
                     LabelA.config(text="Error!!")
                     LabelA.update_idletasks()
@@ -75,7 +79,7 @@ def Serial_Connect():
     Tkwindow.update()
     time.sleep(1)
     Str_Message=rv.decode("utf-8")
-    while Str_Message == "lock": 
+    while Str_Message[0:6] != "locked": 
         for i in range(1,10):
             rv=ser.readline()
             print("Loading....")
@@ -89,7 +93,7 @@ def Serial_Connect():
             time.sleep(1)
             Str_Message=rv.decode("utf-8")
             
-            if Str_Message[0:6]=='Unlock':
+            if Str_Message[0:6]=='unlocked':
                 print("Unlock the car.")
                 LabelA.config(text="Unlock the car.") 
                 buttonStart.config(state="disabled")
@@ -116,7 +120,7 @@ def Exit():
 Tkwindow=tkinter.Tk()
 Tkwindow.title("車輛儀表板")
 Tkwindow.minsize(600,400)
-LabelA=tkinter.Label(Tkwindow,bg='white',fg='black',text="Press 'connect' button to start",width=30,height=10,justify=tkinter.LEFT)
+LabelA=tkinter.Label(Tkwindow,bg='white',fg='black',text="Press '發動' button to start",width=30,height=10,justify=tkinter.LEFT)
 LabelA.pack(side=tkinter.TOP)
 buttonStart=tkinter.Button(Tkwindow,anchor=tkinter.S,text="發動",width=10,height=1,command=Serial_Connect)
 buttonStart.pack(side=tkinter.RIGHT)
@@ -131,12 +135,7 @@ msg=ser.readline().decode()
 print('serial_msg: ',msg)
 msg_data=re.split(',|:',msg)
 time.sleep(1)
-
-# scale=tkinter.Scale(Tkwindow,label='華氏警示溫度',from_=50 ,to = 100,\
-#                orient='horizontal',length=200, show=True,\
-#               tickinterval=3,resolution=0.01,command=setFlag)
-# scale.pack()    
-
+   
 Tkwindow.after(10000,print_selection2(1))
 
 Tkwindow.mainloop()
