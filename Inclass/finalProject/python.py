@@ -1,30 +1,11 @@
 import time
 import serial
 import tkinter
-import pymysql
 import re
 
 ser=serial.Serial("COM7", 115200,timeout=2)
-data=""
-condition=False
-C = ''
-F = ''
-H = ''
-
-host= '192.168.56.1'
 
 flag = True
-#db = pymysql.connect(host=host,user="nima",password="123",database="test")
- 
-def print_selection():     
-    if(var.get()==True)&(var2.get()==False)&(var3.get()==False):
-        LabelA.config(text='相對溫度'+msg_data[1])
-    elif (var.get()==False)&(var2.get()==True)&(var3.get()==False):
-        LabelA.config(text='攝氏溫度'+msg_data[3])
-    elif (var.get()==False)&(var2.get()==False)&(var3.get()==True):
-        LabelA.config(text='華氏溫度'+msg_data[5])
-    else:
-        LabelA.config(text='error')
         
 def setFlag(value):
     global flag 
@@ -32,57 +13,23 @@ def setFlag(value):
     
 def print_selection2(value): 
     global flag
-    try:
-        db = pymysql.connect(host=host,user="nima",password="123",database="test")
-        cursor1=db.cursor()
-        while ser.in_waiting:
-            try:
-                msg = ser.readline().decode()
-                if(msg==''):
-                   continue
-                else:
-                    print('msg format ={}'.format(msg))
-                    msg_data=re.split(',|:',msg)
-                    if len(msg_data) < 5:
-                        continue
-                    elif("距離"in str(msg_data[0])):
-                            #將拉桿位置顯示出來
-                            if float(msg_data[2]) < 10:
-                                tkinter.messagebox.showwarning(title='距離',message='距離過近')
-                            elif float(msg_data[2]) == 0:
-                                if flag:
-                                    tkinter.messagebox.showerror(title='距離',message='危險')
-                                    distance = msg_data[2].replace(r"\r\n", '')
-                                    cursor1.execute('Insert into `dht`(`distance`) values(%s)' %(distance))
-                                    db.commit()
-                                    flag = False
-                                    LabelA.config(text="Send to database")
-                                    LabelA.update_idletasks()
-                                    print("上傳完成")
-                                
-                                Tkwindow.update()
-                                
-                               
-                            else: 
-                                Ardiuno_cmd='b'
-                                cmd=Ardiuno_cmd.encode("utf-8")
-                                SerialWrite(cmd)
-                                condition=False
-                    else:
-                        continue
-            except OSError as er:
-                   db.rollback()
-                   db.close()
-                   print(er)
-    except OSError as er:
-        db.rollback()
-        db.close()
-        print(er)
-    except KeyboardInterrupt:
-        ser.close()
-        db.close()
-        print("closed!")
-    db.close()
+    msg = ser.readline().decode()
+    print('msg format ={}'.format(msg))
+    msg_data=re.split(',|:',msg)
+    if("距離"in str(msg_data[0])) and len(msg_data) == 3:
+            #將拉桿位置顯示出來
+            if float(msg_data[2]) < 10:
+                tkinter.messagebox.showwarning(title='距離',message='距離過近')
+            elif float(msg_data[2]) == 0:
+                if flag:
+                    tkinter.messagebox.showerror(title='距離',message='危險')
+                    distance = msg_data[2].replace(r"\r\n", '')
+                    flag = False
+                    LabelA.config(text="Error!!")
+                    LabelA.update_idletasks()
+                    print("上傳完成")
+                
+                Tkwindow.update()
     Tkwindow.after(10000,print_selection2(1))
     
 def SerialWrite(command):
@@ -123,31 +70,32 @@ def Send_turnOff():
 
 def Serial_Connect():
     print("Connecting to Ardiuno.....")
-    
     LabelA.config(text="No detect key")
     LabelA.update_idletasks()
     Tkwindow.update()
     time.sleep(1)
-    for i in range(1,10):
-        rv=ser.readline()
-        print("Loading....")
-        
-        LabelA.config(text="Loading....")
-        LabelA.update_idletasks()
-        Tkwindow.update()
-        
-        print(rv.decode("utf-8"))
-        ser.flushInput()
-        time.sleep(1)
-        Str_Message=rv.decode("utf-8")
-        
-        if Str_Message[0:6]=='Unlock':
-            print("Unlock the car.")
-            LabelA.config(text="Unlock the car.") 
-            buttonStart.config(state="disabled")
+    Str_Message=rv.decode("utf-8")
+    while Str_Message == "lock": 
+        for i in range(1,10):
+            rv=ser.readline()
+            print("Loading....")
+            
+            LabelA.config(text="Loading....")
             LabelA.update_idletasks()
             Tkwindow.update()
-            break
+            
+            print(rv.decode("utf-8"))
+            ser.flushInput()
+            time.sleep(1)
+            Str_Message=rv.decode("utf-8")
+            
+            if Str_Message[0:6]=='Unlock':
+                print("Unlock the car.")
+                LabelA.config(text="Unlock the car.") 
+                buttonStart.config(state="disabled")
+                LabelA.update_idletasks()
+                Tkwindow.update()
+                break
         
 def Exit():
     Isexit = tkinter.messagebox.askokcancel(title='askquestion',message='是否要熄火?')
