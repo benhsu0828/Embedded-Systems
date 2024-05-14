@@ -33,7 +33,7 @@ def print_selection2(value):
                     LabelA.update_idletasks()
                     print("上傳完成")
                 
-                Tkwindow.update()
+    Tkwindow.update()
     Tkwindow.after(10000,print_selection2(1))
     
 def SerialWrite(command):
@@ -120,12 +120,14 @@ def Exit():
 Tkwindow=tkinter.Tk()
 Tkwindow.title("車輛儀表板")
 Tkwindow.minsize(600,400)
-LabelA=tkinter.Label(Tkwindow,bg='white',fg='black',text="Press '發動' button to start",width=30,height=10,justify=tkinter.LEFT)
+Tkwindow.configure(background='#000000')
+
+LabelA=tkinter.Label(Tkwindow,bg='#9F35FF',fg='white',text="Press '發動' button to start",width=30,height=10,justify=tkinter.LEFT)
 LabelA.pack(side=tkinter.TOP)
 buttonStart=tkinter.Button(Tkwindow,anchor=tkinter.S,text="發動",width=10,height=1,command=Serial_Connect)
 buttonStart.pack(side=tkinter.RIGHT)
 buttonEnd=tkinter.Button(Tkwindow,anchor=tkinter.S,text="熄火",width=10,height=1,command=Exit)
-buttonEnd.pack(side=tkinter.RIGHT)
+buttonEnd.pack(side=tkinter.LEFT)
 
 var=tkinter.IntVar()
 var2=tkinter.IntVar()
