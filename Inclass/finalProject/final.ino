@@ -19,7 +19,7 @@ MFRC522 rfid(/*SS_PIN*/ 10, /*RST_PIN*/ 9);
 String read_id;
 String card_uid = "07ede7a4";
 char c='d'; //d
-int d=1000; //1000
+int d=5; //1000
 int flag=0; //0
 int stopped=0;
 char gas='0';
