@@ -123,7 +123,7 @@ Tkwindow.title("車輛儀表板")
 Tkwindow.minsize(600,400)
 Tkwindow.configure(background='#000000')
 
-LabelA=tkinter.Label(Tkwindow,bg='#9F35FF',fg='white',text="Press '發動' button to start",width=30,height=10,justify=tkinter.LEFT)
+LabelA=tkinter.Label(Tkwindow,bg='#9F35FF',fg='white',text="Press '發動' button to start",font=("Helvetica",15,'bold'),width=30,height=10,justify=tkinter.LEFT)
 LabelA.pack(side=tkinter.TOP)
 buttonStart=tkinter.Button(Tkwindow,anchor=tkinter.S,text="發動",width=10,height=1,command=Serial_Connect)
 buttonStart.pack(side=tkinter.RIGHT)
