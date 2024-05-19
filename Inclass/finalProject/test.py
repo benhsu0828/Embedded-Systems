@@ -3,7 +3,7 @@ import serial
 import tkinter
 import tkinter.messagebox
 import re
-
+from PIL import Image, ImageTk
 
     
 # def print_selection2(value): 
@@ -119,6 +119,12 @@ buttonStart=tkinter.Button(Tkwindow,anchor=tkinter.S,text="發動",width=10,heig
 buttonStart.pack(side=tkinter.RIGHT)
 buttonEnd=tkinter.Button(Tkwindow,anchor=tkinter.S,text="熄火",width=10,height=1,command=Exit)
 buttonEnd.pack(side=tkinter.LEFT)
+
+# canvas=tkinter.Canvas(master=Tkwindow,bg='blue',height=169,width=300)
+# image_file=Image.open('Dashboard_resize.jpg')
+# image_file=ImageTk.PhotoImage(image_file)
+# img = canvas.create_image(0,0,anchor='nw',image=image_file)
+# canvas.pack()
 
 var=tkinter.IntVar()
 var2=tkinter.IntVar()

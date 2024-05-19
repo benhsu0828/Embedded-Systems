@@ -3,6 +3,7 @@ import serial
 import tkinter
 import tkinter.messagebox
 import re
+#from PIL import Image, ImageTk
 
 ser=serial.Serial("COM7", 115200,timeout=2)
 
@@ -17,7 +18,7 @@ def print_selection2(value):
     msg = ser.readline().decode()
     print('msg format ={}'.format(msg))
     msg_data=re.split(',|:',msg)
-    LabelA.config(text=f"Speed : {msg_data[3]}")
+    LabelA.config(text=f"Speed : {msg_data[3]} cm/s")
     LabelA.update_idletasks()
     Tkwindow.update()
     if("distance"in str(msg_data[0])) and len(msg_data) == 4:
